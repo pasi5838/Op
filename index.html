@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.json">
+  <title>Game Teka-Teki Hewan</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #e0f7fa;
+      text-align: center;
+      padding: 20px;
+    }
+    #game-container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      font-size: 2em;
+      color: #00796b;
+    }
+    .question {
+      font-size: 1.5em;
+      margin: 20px 0;
+    }
+    input {
+      padding: 10px;
+      width: 80%;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      background-color: #00796b;
+      color: white;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 10px;
+      font-size: 1.2em;
+    }
+  </style>
+
+  <style>
+    #lives {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  
+<div id="game-container">
+  <div id="lives">❤️❤️❤️</div>
+
+    <h1>Game Teka-Teki Hewan</h1>
+    <div class="question" id="question">Memuat soal...</div>
+    <input type="text" id="answer" placeholder="Ketik jawabanmu di sini..." />
+    <br>
+    <button onclick="submitAnswer()">Jawab</button>
+    <div class="result" id="result"></div>
+  </div>
+  <script>
+    const questions = [
+      { q: "Hewan apa yang memakan rumput?", a: "sapi" },
+      { q: "Hewan apa yang hidup di laut dan punya tentakel?", a: "gurita" },
+      { q: "Hewan yang melompat dan suka wortel?", a: "kelinci" },
+      { q: "Hewan yang terbang di malam hari dan pakai radar?", a: "kelelawar" },
+      { q: "Hewan yang bertaring dan sering disebut raja hutan?", a: "singa" },
+      { q: "Hewan yang hidup di air dan memiliki sisik?", a: "ikan" },
+      { q: "Hewan yang suka berdengung dan menyengat?", a: "lebah" },
+      { q: "Hewan yang berkaki delapan dan membuat jaring?", a: "laba-laba" },
+      { q: "Hewan yang lambat dan membawa rumah?", a: "siput" },
+      { q: "Hewan yang bisa terbang dan warnanya indah?", a: "burung" },
+      { q: "Hewan yang hidup di lumpur dan suka berkubang?", a: "babi" },
+      { q: "Hewan yang bisa meniru suara manusia?", a: "burung beo" },
+      { q: "Hewan yang besar dan punya belalai?", a: "gajah" },
+      { q: "Hewan yang berenang dan punya cangkang?", a: "penyu" },
+      { q: "Hewan yang kecil dan suka menggigit?", a: "nyamuk" },
+      { q: "Hewan yang pintar dan suka pisang?", a: "monyet" },
+      { q: "Hewan yang bertanduk dan suka bertarung?", a: "banteng" },
+      { q: "Hewan yang punya duri di tubuhnya?", a: "landak" },
+      { q: "Hewan yang berbisa dan melata?", a: "ular" },
+      { q: "Hewan yang suka susu dan sering diperah?", a: "sapi" },
+      { q: "Hewan yang punya kantong dan lompat-lompat?", a: "kanguru" },
+      { q: "Hewan yang hidup di kutub dan suka es?", a: "beruang kutub" },
+      { q: "Hewan yang punya punuk dan tahan haus?", a: "unta" },
+      { q: "Hewan yang bisa menyamar seperti daun?", a: "belalang sembah" },
+      { q: "Hewan yang bisa bersuara kukuruyuk?", a: "ayam jantan" },
+      { q: "Hewan yang dikenal setia dan penjaga rumah?", a: "anjing" },
+      { q: "Hewan yang suka duduk santai dan makan bambu?", a: "panda" },
+      { q: "Hewan yang bertelur dan punya sisik?", a: "reptil" },
+      { q: "Hewan yang bisa memanjat pohon dan makan serangga?", a: "cicak" },
+      { q: "Hewan yang punya suara merdu dan pandai berkicau?", a: "kenari" },
+      { q: "Hewan yang punya dua kaki dan paruh?", a: "ayam" },
+      { q: "Hewan yang hidup di rawa dan punya rahang kuat?", a: "buaya" },
+      { q: "Hewan kecil yang suka hidup di rumah dan suka keju?", a: "tikus" },
+      { q: "Hewan laut yang punya capit dan jalan miring?", a: "kepiting" },
+      { q: "Hewan yang punya suara meong?", a: "kucing" },
+      { q: "Hewan yang suka minum darah?", a: "nyamuk" },
+      { q: "Hewan yang digunakan untuk menunggangi di padang pasir?", a: "unta" },
+      { q: "Hewan yang dijadikan peliharaan dan bisa menirukan kata?", a: "burung beo" },
+      { q: "Hewan yang terbang malam dan punya radar alami?", a: "kelelawar" },
+      { q: "Hewan yang punya warna hitam putih dan hidup di Afrika?", a: "zebra" },
+      { q: "Hewan yang bisa berenang dan suka ikan?", a: "berang-berang" },
+      { q: "Hewan yang hidup di laut dan bisa menyemprotkan tinta?", a: "cumi-cumi" },
+      { q: "Hewan yang suka bersuara kokok dan punya jengger?", a: "ayam jantan" },
+      { q: "Hewan yang hidup di laut dan bentuknya seperti bintang?", a: "bintang laut" },
+      { q: "Hewan yang hidup di lumpur dan suka lompat?", a: "katak" },
+      { q: "Hewan yang besar dan memiliki taring tajam?", a: "harimau" },
+      { q: "Hewan yang sangat lambat dan bisa menggantung di pohon?", a: "sloth" },
+      { q: "Hewan yang bisa terbang dan tubuhnya bersinar di malam hari?", a: "kunang-kunang" },
+      { q: "Hewan kecil yang suka masuk ke rumah dan bisa melompat?", a: "kecoa" }
+    ];
+    let current = 0;
+    function showQuestion() {
+      const q = questions[current];
+      document.getElementById("question").innerText = `${current + 1}. ${q.q}`;
+      document.getElementById("answer").value = "";
+      document.getElementById("result").innerText = "";
+    }
+    function submitAnswer() {
+      const userAnswer = document.getElementById("answer").value.trim().toLowerCase();
+      const correctAnswer = questions[current].a.toLowerCase();
+      const result = document.getElementById("result");
+      if (userAnswer === correctAnswer) {
+        result.innerText = "✅ Benar!";
+        current++;
+        if (current < questions.length) {
+          setTimeout(showQuestion, 1000);
+        } else {
+          result.innerText = "🎉 Kamu telah menyelesaikan semua soal!";
+          document.getElementById("question").innerText = "Selesai!";
+        }
+      } else {
+        result.innerText = "❌ Salah, coba lagi!";
+      }
+    }
+    window.onload = showQuestion;
+  </script>
+
+<script>
+  let lives = 3;
+  const livesDisplay = document.getElementById("lives");
+  const questionEl = document.getElementById("question");
+  const answerInput = document.getElementById("answer");
+  const submitBtn = document.getElementById("submit");
+
+  function updateLivesDisplay() {
+    livesDisplay.textContent = '❤️'.repeat(lives);
+  }
+
+  const originalCheckAnswer = checkAnswer;
+  checkAnswer = function() {
+    const answer = answerInput.value.trim().toLowerCase();
+    if (answer === questions[currentQuestionIndex].answer) {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        displayQuestion();
+      } else {
+        questionEl.textContent = "Selamat! Kamu menyelesaikan semua soal!";
+        submitBtn.disabled = true;
+      }
+    } else {
+      lives--;
+      updateLivesDisplay();
+      if (lives <= 0) {
+        questionEl.textContent = "Game Over! Kamu kehabisan nyawa 😢";
+        submitBtn.disabled = true;
+      } else {
+        alert("Jawaban salah! Coba lagi.");
+      }
+    }
+    answerInput.value = "";
+  };
+</script>
+</body>
+
+</html>
